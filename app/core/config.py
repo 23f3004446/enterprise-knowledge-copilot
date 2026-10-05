@@ -7,6 +7,9 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class Settings(BaseSettings):
     app_env: str = "development"
     jwt_secret_key: str = "dev-only-enterprise-knowledge-copilot-key-change-before-production"
+    initial_employee_password: str = ""
+    initial_manager_password: str = ""
+    initial_admin_password: str = ""
     database_url: str = "sqlite:///./data/app.db"
     api_title: str = "Enterprise Knowledge Copilot"
     api_version: str = "0.1.0"

@@ -77,13 +77,15 @@ python -m streamlit run frontend/streamlit_app.py --server.port 8502
 
 Open http://localhost:8502. API docs are at http://localhost:8000/docs and health at `/health`.
 
-Development-only accounts:
+Development-only local accounts:
 
 | Email | Password |
 |---|---|
 | employee@example.com | demo_employee_password |
 | manager@example.com | demo_manager_password |
 | admin@example.com | demo_admin_password |
+
+These fixed demo credentials are seeded only when `APP_ENV=development`. In other environments, set `INITIAL_EMPLOYEE_PASSWORD`, `INITIAL_MANAGER_PASSWORD`, and `INITIAL_ADMIN_PASSWORD` as deployment secrets to create the corresponding initial accounts. Do not reuse the public development passwords.
 
 ## Documents and indexes
 
