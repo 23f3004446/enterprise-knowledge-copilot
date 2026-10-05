@@ -4,9 +4,14 @@ import os
 
 import requests
 import streamlit as st
+from streamlit.errors import StreamlitSecretNotFoundError
 
 st.set_page_config(page_title="Enterprise Knowledge Copilot", page_icon="📚", layout="wide")
-DEFAULT_API = os.getenv("API_BASE", "http://127.0.0.1:8000").rstrip("/")
+try:
+    configured_api = os.getenv("API_BASE") or st.secrets.get("API_BASE")
+except StreamlitSecretNotFoundError:
+    configured_api = os.getenv("API_BASE")
+DEFAULT_API = (configured_api or "http://127.0.0.1:8000").rstrip("/")
 
 if "token" not in st.session_state:
     st.session_state.token = None

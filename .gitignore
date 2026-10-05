@@ -8,8 +8,11 @@ __pycache__/
 *.sqlite3
 *.db
 data/index/
-data/evaluation/results.json
 data/uploads/
+data/evaluation/results.json
+.cache/
+.huggingface/
+hf_cache/
 .coverage
 htmlcov/
 .DS_Store

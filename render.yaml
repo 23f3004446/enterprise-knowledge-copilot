@@ -1,0 +1,38 @@
+services:
+  - type: web
+    name: enterprise-knowledge-copilot-api
+    runtime: python
+    plan: free
+    region: oregon
+    buildCommand: python -m pip install --no-cache-dir --index-url https://download.pytorch.org/whl/cpu torch && python -m pip install --no-cache-dir --timeout 180 --retries 5 -r requirements-backend.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.12
+      - key: APP_ENV
+        value: production
+      - key: JWT_SECRET_KEY
+        generateValue: true
+      - key: INITIAL_EMPLOYEE_PASSWORD
+        sync: false
+      - key: INITIAL_MANAGER_PASSWORD
+        sync: false
+      - key: INITIAL_ADMIN_PASSWORD
+        sync: false
+      - key: LLM_PROVIDER
+        value: mock
+      - key: DATABASE_URL
+        value: sqlite:///./data/app.db
+      - key: RAW_DOCUMENTS_DIR
+        value: data/raw
+      - key: UPLOADED_DOCUMENTS_DIR
+        value: data/uploads
+      - key: INDEX_DIR
+        value: data/index
+      - key: HF_HOME
+        value: /tmp/huggingface
+      - key: USE_TF
+        value: "0"
+      - key: TOKENIZERS_PARALLELISM
+        value: "false"

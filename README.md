@@ -136,6 +136,16 @@ docker compose up --build
 Open http://localhost:8502. SQLite database, raw uploads and indexes are persisted in `./data`. Stop with `Ctrl+C`, then `docker compose down`.
 The Dockerfile installs the CPU-only PyTorch wheel before sentence-transformers to avoid bundling unused NVIDIA/CUDA libraries; dependency downloads use an extended timeout for slower connections.
 
+## Free portfolio deployment
+
+The Streamlit UI and FastAPI/RAG API are separate deployments. Streamlit Community Cloud runs `frontend/streamlit_app.py`; set its `API_BASE` secret to the deployed API's HTTPS origin. The UI uses `API_BASE` from the process environment or Streamlit secrets, falling back to `http://127.0.0.1:8000` only for local development. Streamlit sends API requests server-side, so browser CORS is not needed for this architecture.
+
+`render.yaml` defines a free Render Python web service for `app.main:app`. Create it from the public GitHub repository using Render's Blueprint flow and enter three unique initial passwords when prompted for `INITIAL_EMPLOYEE_PASSWORD`, `INITIAL_MANAGER_PASSWORD`, and `INITIAL_ADMIN_PASSWORD`. Render generates `JWT_SECRET_KEY`. These values remain platform secrets; do not put them in GitHub or Streamlit secrets. The fixed demo passwords are created only in development mode.
+
+The backend runtime installs CPU-only PyTorch separately and uses `requirements-backend.txt`, which excludes frontend and test packages but retains FAISS, sentence-transformers, embeddings, BM25, reranking, authentication, and the API dependencies. Models load on the first retrieval request rather than during process startup. The first query may take several minutes while model files download.
+
+Free hosting is for portfolio/testing use, not production: Render Free provides 512 MB RAM, spins down after inactivity, and has an ephemeral filesystem. The local SQLite database, uploads, indexes, and downloaded models can be lost after a restart or spin-down; bundled sample documents are re-ingested at startup and indexes can be rebuilt. The full embedding and reranker models may exceed the free instance's memory during a real query. If that occurs, a larger paid service or a different host with sufficient free RAM is required; do not silently disable vector retrieval or reranking to fit the free tier.
+
 ## Limitations and interview explanation
 
 - Local default mode is evidence extraction, not generative AI. This is explicit and avoids fabricating model capability. A configured compatible LLM enables grounded generation.
