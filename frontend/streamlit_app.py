@@ -77,8 +77,8 @@ with st.sidebar:
 if not st.session_state.token:
     st.info("Sign in to search authorized enterprise documents.")
     st.markdown(
-        "**Development accounts** are documented in the project README. "
-        "The local extractive answer mode does not require an external LLM key."
+        "Use the accounts configured by the API host. Local development accounts are documented in the README. "
+        "The extractive answer mode does not require an external LLM key."
     )
     st.stop()
 
