@@ -138,7 +138,7 @@ The Dockerfile installs the CPU-only PyTorch wheel before sentence-transformers 
 
 ## Free portfolio deployment
 
-The Streamlit UI and FastAPI/RAG API are separate deployments. Streamlit Community Cloud runs `frontend/streamlit_app.py`; set its `API_BASE` secret to the deployed API's HTTPS origin. The UI uses `API_BASE` from the process environment or Streamlit secrets, falling back to `http://127.0.0.1:8000` only for local development. Streamlit sends API requests server-side, so browser CORS is not needed for this architecture.
+The Streamlit UI and FastAPI/RAG API are separate deployments. Streamlit Community Cloud runs `frontend/streamlit_app.py` and installs only the frontend dependencies from `frontend/requirements.txt`; set its `API_BASE` secret to the deployed API's HTTPS origin. The UI uses `API_BASE` from the process environment or Streamlit secrets, falling back to `http://127.0.0.1:8000` only for local development. Streamlit sends API requests server-side, so browser CORS is not needed for this architecture.
 
 `render.yaml` defines a free Render Python web service for `app.main:app`. Create it from the public GitHub repository using Render's Blueprint flow and enter three unique initial passwords when prompted for `INITIAL_EMPLOYEE_PASSWORD`, `INITIAL_MANAGER_PASSWORD`, and `INITIAL_ADMIN_PASSWORD`. Render generates `JWT_SECRET_KEY`. These values remain platform secrets; do not put them in GitHub or Streamlit secrets. The fixed demo passwords are created only in development mode.
 
