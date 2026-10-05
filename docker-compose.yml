@@ -1,0 +1,36 @@
+services:
+  api:
+    build: .
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: sqlite:////app/data/app.db
+      RAW_DOCUMENTS_DIR: /app/data/raw
+      UPLOADED_DOCUMENTS_DIR: /app/data/uploads
+      INDEX_DIR: /app/data/index
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./data:/app/data
+      - model-cache:/home/appuser/.cache/huggingface
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=3)"]
+      interval: 20s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+
+  frontend:
+    build: .
+    command: streamlit run frontend/streamlit_app.py --server.address 0.0.0.0 --server.port 8502
+    environment:
+      API_BASE: http://api:8000
+    ports:
+      - "8502:8502"
+    depends_on:
+      api:
+        condition: service_healthy
+
+volumes:
+  model-cache:
